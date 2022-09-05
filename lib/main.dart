@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                     bottomLeft: Radius.circular(30),
                     bottomRight: Radius.circular(30))),
             child: Column(children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -172,13 +172,16 @@ class _HomePageState extends State<HomePage> {
             ]),
           ),
           Expanded(
-              child: GridView.count(
-              crossAxisCount: 2,
-              children: List.generate(devices.length, (index) {
-                return createElement(devices[index].icon, devices[index].isActive,
-                    devices[index].name, devices[index].model,index);
-              })
-          )
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                crossAxisCount: 2,
+                children: List.generate(devices.length, (index) {
+                  return createElement(devices[index].icon, devices[index].isActive,
+                      devices[index].name, devices[index].model,index);
+                })
+          ),
+              )
         )
         ]));
   }
