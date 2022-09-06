@@ -1,10 +1,13 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MaterialApp(
-      debugShowCheckedModeBanner: false, home: FirstScreen()));
-}
+void main() => runApp(MaterialApp(
+    initialRoute: '/',
+    routes: {
+      '/': (context) => const FirstScreen(),
+      '/secondScreen': (context) => const SecondScreen()
+    },
+    debugShowCheckedModeBanner: false));
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -40,17 +43,14 @@ class _FirstScreenState extends State<FirstScreen> {
           Center(
             child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SecondScreen()));
+                  Navigator.pushNamed(context, '/secondScreen');
                 },
                 child: const Text('Move to second screen')),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Text(''),
+        child: const Text('Add'),
         onPressed: () {},
       ),
     );
@@ -76,11 +76,11 @@ class SecondScreen extends StatelessWidget {
           ),
           const SizedBox(
             height: 30,
-        ),
+          ),
           ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            onPressed: () {
+              Navigator.pop(context);
+            },
               child: const Text('Move to first screen'))
         ],
       )),
