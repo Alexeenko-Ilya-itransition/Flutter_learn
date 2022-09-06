@@ -1,47 +1,64 @@
-import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'lists/GridList.dart';
+import 'lists/HorizontalList.dart';
+import 'lists/ListWithDifferentItems.dart';
+import 'lists/FloatingAppBar.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/gridList': (context) => const GridList(),
+        '/horizontalList': (context) => const HorizontalList(),
+        '/listWithDifferentItems': (context) => ListWithDifferentItem(),
+        '/floatingAppBar': (context) => const FloatingAppBar()
+      }
+    )
+  );
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _MyAppState();
-}
-
-  class _MyAppState extends State<MyApp>{
-
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18);
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-  return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(title: const Text('My first app'), centerTitle: true),
-        body: ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemBuilder: (context,i){
-              if(i.isOdd) return const Divider();
-              final index = i ~/ 2;
-              if(index >= _suggestions.length){
-                _suggestions.addAll(generateWordPairs().take(10));
-              }
-          return ListTile(
-            title: Text(_suggestions[index].asPascalCase,
-            style: _biggerFont,
-            )
-          );
-        }),
-        floatingActionButton: FloatingActionButton(
-          child: const Text('button'),
-          onPressed: () {},
+    return Scaffold(
+      appBar: AppBar(title: const Text('My first app'), centerTitle: true),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/gridList');
+                },
+                child: const Text('Grid List')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/horizontalList');
+                },
+                child: const Text('Horizontal List')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/listWithDifferentItems');
+                },
+                child: const Text('List with different types of items')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/floatingAppBar');
+                },
+                child: const Text('Floating App Bar')),
+          ],
         ),
-      ));
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Text('button'),
+        onPressed: () {},
+      ),
+    );
   }
 }
