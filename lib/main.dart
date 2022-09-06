@@ -1,28 +1,16 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(
-    initialRoute: '/',
-    routes: {
-      '/': (context) => const FirstScreen(),
-      '/secondScreen': (context) => const SecondScreen()
-    },
-    debugShowCheckedModeBanner: false,
-    onGenerateRoute: (settings) {
-    if (settings.name == PassArgumentsScreen.routeName) {
-      final args = settings.arguments as ScreenArguments;
-      return MaterialPageRoute(
-        builder: (context) {
-          return PassArgumentsScreen(
-            title: args.title,
-            message: args.message,
-          );
-        },
-      );
-      }
-    return null;
-  }
-));
+void main() =>
+    runApp(MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const FirstScreen(),
+        '/secondScreen': (context) => const SecondScreen(),
+        '/sendDataScreen': (context) => SendDataScreen(),
+        '/detailsScreen': (context) => const DetailsScreen()
+      },
+      debugShowCheckedModeBanner: false,
+    ));
 
 
 class FirstScreen extends StatefulWidget {
@@ -33,60 +21,45 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home screen'), centerTitle: true),
-      body: Stack(
-        children: [
-          ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemBuilder: (context, i) {
-                if (i.isOdd) return const Divider();
-                final index = i ~/ 2;
-                if (index >= _suggestions.length) {
-                  _suggestions.addAll(generateWordPairs().take(10));
-                }
-                return ListTile(
-                    title: Text(
-                  _suggestions[index].asPascalCase,
-                  style: _biggerFont,
-                ));
-              }),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context,
-                          '/secondScreen',
-                          arguments: ScreenArguments('Second screen', 'Screen with arguments'));
-                    },
-                    child: const Text('Navigate to screen that extracts arguments')),
-                const SizedBox(height: 10,),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context,
-                          '/passArguments',
-                          arguments: ScreenArguments('Accept arguments screen', 'Screen with arguments'));
-                    },
-                    child: const Text('Navigate to a named that accepts arguments')),
-              ],
-            ),
-          )
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  _navigateAndDisplaySelection(context);
+                },
+                child: const Text('Get result')),
+            const SizedBox(height: 10,),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/sendDataScreen');
+                },
+                child: const Text('Send Data Screen')),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Text('Add'),
         onPressed: () {},
       ),
     );
+  }
+
+  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.pushNamed(
+      context,
+      '/secondScreen',
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text('$result')));
   }
 }
 
@@ -95,75 +68,85 @@ class SecondScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as ScreenArguments;
     return Scaffold(
       appBar: AppBar(
-        title: Text(args.title),
-      ),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          Text(
-            args.message,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-              child: const Text('Move to first screen'))
-        ],
-      )),
-    );
-  }
-}
-
-class PassArgumentsScreen extends StatelessWidget {
-  static const routeName = '/passArguments';
-
-  final String title;
-  final String message;
-  const PassArgumentsScreen({
-    super.key,
-    required this.title,
-    required this.message,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
+        title: const Text('Choose variant'),
       ),
       body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                message,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, 'Yep');
+                  },
+                  child: const Text('Yep')),
               const SizedBox(
                 height: 30,
               ),
               ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, 'Nope');
                   },
-                  child: const Text('Move to first screen'))
+                  child: const Text('Nope'))
             ],
           )),
     );
   }
 }
 
-class ScreenArguments{
-  ScreenArguments(this.title,this.message);
+class SendDataScreen extends StatelessWidget {
+    SendDataScreen({Key? key}) : super(key: key);
 
+  final list = List.generate(20, (index) => Info(
+    'Element $index', 'A description of what needs to be done for Todo $index'
+  ));
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Send data screen'),
+      ),
+      body: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(list[index].title),
+            onTap: (){
+              Navigator.pushNamed(
+                context,
+                '/detailsScreen',
+                arguments: list[index]
+              );
+            },
+          );
+        }
+      )
+    );
+  }
+}
+
+class DetailsScreen extends StatelessWidget {
+  const DetailsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final info = ModalRoute.of(context)?.settings.arguments as Info;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(info.title),
+      ),
+      body: Center(
+          child: Text(info.description)
+      ),
+    );
+  }
+}
+
+class Info {
   final String title;
-  final String message;
+  final String description;
+
+  const Info(this.title, this.description);
 }
