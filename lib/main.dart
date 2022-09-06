@@ -7,7 +7,23 @@ void main() => runApp(MaterialApp(
       '/': (context) => const FirstScreen(),
       '/secondScreen': (context) => const SecondScreen()
     },
-    debugShowCheckedModeBanner: false));
+    debugShowCheckedModeBanner: false,
+    onGenerateRoute: (settings) {
+    if (settings.name == PassArgumentsScreen.routeName) {
+      final args = settings.arguments as ScreenArguments;
+      return MaterialPageRoute(
+        builder: (context) {
+          return PassArgumentsScreen(
+            title: args.title,
+            message: args.message,
+          );
+        },
+      );
+      }
+    return null;
+  }
+));
+
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -41,11 +57,28 @@ class _FirstScreenState extends State<FirstScreen> {
                 ));
               }),
           Center(
-            child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/secondScreen');
-                },
-                child: const Text('Move to second screen')),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context,
+                          '/secondScreen',
+                          arguments: ScreenArguments('Second screen', 'Screen with arguments'));
+                    },
+                    child: const Text('Navigate to screen that extracts arguments')),
+                const SizedBox(height: 10,),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context,
+                          '/passArguments',
+                          arguments: ScreenArguments('Accept arguments screen', 'Screen with arguments'));
+                    },
+                    child: const Text('Navigate to a named that accepts arguments')),
+              ],
+            ),
           )
         ],
       ),
@@ -62,17 +95,18 @@ class SecondScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as ScreenArguments;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second screen'),
+        title: Text(args.title),
       ),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-          const Text(
-            'Second Screen',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          Text(
+            args.message,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(
             height: 30,
@@ -86,4 +120,50 @@ class SecondScreen extends StatelessWidget {
       )),
     );
   }
+}
+
+class PassArgumentsScreen extends StatelessWidget {
+  static const routeName = '/passArguments';
+
+  final String title;
+  final String message;
+  const PassArgumentsScreen({
+    super.key,
+    required this.title,
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                message,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Move to first screen'))
+            ],
+          )),
+    );
+  }
+}
+
+class ScreenArguments{
+  ScreenArguments(this.title,this.message);
+
+  final String title;
+  final String message;
 }
