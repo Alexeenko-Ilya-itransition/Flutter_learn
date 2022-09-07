@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class FloatingAppBar extends StatelessWidget {
@@ -11,23 +10,22 @@ class FloatingAppBar extends StatelessWidget {
           title: const Text('Grid List'),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            children: List.generate(100, (index) {
-              return Container(
-                color: Colors.yellow.shade200,
-                child: Center(
-                  child: Text(
-                    'Item $index',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
+            padding: const EdgeInsets.all(16.0),
+            child: CustomScrollView(
+              slivers: [
+                const SliverAppBar(
+                  title: Text('Sliver app bar'),
+                  floating: true,
+                  flexibleSpace: Placeholder(),
+                  expandedHeight: 60,
                 ),
-              );
-            }),
-          ),
-        ));
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                        (context, index) => ListTile(
+                              title: Text('Item $index'),
+                            ),
+                        childCount: 50))
+              ],
+            )));
   }
 }
