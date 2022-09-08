@@ -4,6 +4,8 @@ import 'lists/GridList.dart';
 import 'lists/HorizontalList.dart';
 import 'lists/ListWithDifferentItems.dart';
 import 'lists/FloatingAppBar.dart';
+import 'images/ImagesFromTheInternet.dart';
+import 'images/ImageWithPlaceHolder.dart';
 
 void main() {
   runApp(
@@ -15,7 +17,9 @@ void main() {
         '/gridList': (context) => const GridList(),
         '/horizontalList': (context) => const HorizontalList(),
         '/listWithDifferentItems': (context) => ListWithDifferentItem(),
-        '/floatingAppBar': (context) => const FloatingAppBar()
+        '/floatingAppBar': (context) => const FloatingAppBar(),
+        '/imageFromTheInternet': (context) => const ImagesFromTheInternet(),
+        '/imageWithPlaceHolder': (context) => const ImagesWithPlaceHolder(),
       }
     )
   );
@@ -52,6 +56,16 @@ class HomeScreen extends StatelessWidget {
                   Navigator.pushNamed(context, '/floatingAppBar');
                 },
                 child: const Text('Floating App Bar')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/imageFromTheInternet');
+                },
+                child: const Text('Image from the internet')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/imageWithPlaceHolder');
+                },
+                child: const Text('Image with loading')),
           ],
         ),
       ),
