@@ -15,29 +15,36 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext ctx) {
     return MaterialApp(
-        theme: ThemeData(fontFamily: 'Raleway'),
         debugShowCheckedModeBanner: false,
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
+        home: Scaffold(
             appBar: AppBar(
-              title: const Text('My first app'),
-              bottom: const TabBar(
-                tabs: [
-                  Tab(icon: Icon(Icons.directions_car)),
-                  Tab(icon: Icon(Icons.directions_transit)),
-                  Tab(icon: Icon(Icons.directions_bike)),
-                ],
+                title: const Text('My first app'),
               ),
+            body: const SnackBarPage(),
+        )
+    );
+  }
+}
+
+class SnackBarPage extends StatelessWidget {
+  const SnackBarPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          final snackBar = SnackBar(
+            content: const Text('Information updated'),
+            action: SnackBarAction(
+              label: 'Show',
+              onPressed: () {},
             ),
-            body: const TabBarView(
-              children: [
-                Icon(Icons.directions_car),
-                Icon(Icons.directions_transit),
-                Icon(Icons.directions_bike),
-              ],
-            ),
-          ),
-        ));
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+        child: const Text('Show SnackBar'),
+      ),
+    );
   }
 }
