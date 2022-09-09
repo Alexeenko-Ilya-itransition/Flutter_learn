@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,34 +18,20 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-            appBar: AppBar(
-                title: const Text('My first app'),
-              ),
-            body: const SnackBarPage(),
+          appBar: AppBar(
+            title: const Text('My first app'),
+          ),
+          body: Center(
+              child: Text('Hello world',
+                style: GoogleFonts.smooch(
+                  color: Colors.red,
+                    textStyle: const TextStyle(
+                        fontSize: 30, fontWeight: FontWeight.bold
+                    )
+                ),
+              )
+          )
         )
-    );
-  }
-}
-
-class SnackBarPage extends StatelessWidget {
-  const SnackBarPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          final snackBar = SnackBar(
-            content: const Text('Information updated'),
-            action: SnackBarAction(
-              label: 'Show',
-              onPressed: () {},
-            ),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        },
-        child: const Text('Show SnackBar'),
-      ),
     );
   }
 }
