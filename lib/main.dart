@@ -16,6 +16,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext ctx) {
     return MaterialApp(
+      theme: ThemeData(),
+        darkTheme: ThemeData.dark(),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: AppBar(
